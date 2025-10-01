@@ -80,6 +80,28 @@ class JogoPPTLS:
         jogada_mais_usada = max(contador, key= contador.get)
 
         return contador, jogada_mais_usada
+    
+    def analisar_sequencias(self):
+        if len(self.historico) < 3:
+            return None
+        
+        padroes = {}
+
+
+        for i in range (len(self.historico) - 2):
+
+            jogada1 = self.historico[i]["jogador"]
+            jogada2 = self.historico[i +1]["jogador"]
+            proxima = self.historico[i +2]["jogador"]
+
+            sequencia = f"{jogada1}-{jogada2}"
+
+
+            if sequencia not in padroes:
+                padroes[sequencia] = []
+            padroes[sequencia].append(proxima)
+        
+        return padroes
 
     def iniciar(self):
         self.root.mainloop()
@@ -115,7 +137,14 @@ class JogoPPTLS:
             contador, mais_usada = self.analisar_frequencias()
             print(f"Teste - Contador: {contador}")
             print(f"Teste - Jogada mais usada: {mais_usada} ({self.jogadas[mais_usada]})")
+
+            padroes = self.analisar_sequencias()
+            if padroes:
+                print(f"Teste - Padrões detectados: {padroes}")
     
+    def cerrebro(self):
+        
+
 if __name__ == '__main__':
     jogo = JogoPPTLS()
     jogo.iniciar()
