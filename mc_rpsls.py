@@ -110,7 +110,7 @@ class JogoPPTLS:
         print(f"Botão{escolha_jogador} foi clicado!")
         print(f"Você escolheu: {self.jogadas[escolha_jogador]}")
 
-        escolha_computador = rd.randint(1, 5)
+        escolha_computador = self.cerrebro()
         print(f"Computador escolheu: {self.jogadas[escolha_computador]}")
 
         resultado = self.verificar_vencedor(escolha_jogador, escolha_computador)
@@ -143,7 +143,43 @@ class JogoPPTLS:
                 print(f"Teste - Padrões detectados: {padroes}")
     
     def cerrebro(self):
+
+        if len(self.historico) < 3:
+            return rd.randint(1, 5)
         
+        previsao = None
+
+        padroes = self.analisar_sequencias()
+        if padroes:
+
+            ultima = self.historico[-1]["jogador"]
+            penultima = self.historico[-2]["jogador"]
+            sequencia_atual = f"{penultima}-{ultima}"
+
+            if sequencia_atual in padroes:
+                jogadas_possiveis = padroes[sequencia_atual]
+                previsao = max(set(jogadas_possiveis), key= jogadas_possiveis.count)
+
+            if previsao is None:
+                contador, mais_usada = self.analisar_frequencias()
+                previsao = mais_usada
+
+            if previsao is None:
+                return rd.radind(1, 5)
+            
+            respostas = {
+                1: [2, 5],
+                2: [3, 4],
+                3: [1, 5],
+                4: [1, 3],
+                5: [2, 4]
+                }
+            
+            jogadas_vencedoras= respostas[previsao]
+            escolha_ia= rd.choice(jogadas_vencedoras)
+
+            return escolha_ia
+
 
 if __name__ == '__main__':
     jogo = JogoPPTLS()
